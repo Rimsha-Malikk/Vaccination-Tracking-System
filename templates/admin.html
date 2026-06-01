@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VaxTrack — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F0F4F8;--bg2:#E8EEF4;--card:#fff;--navy:#0A2540;--teal:#0AAFA0;--teal2:#087d72;--teal-pale:#E0F5F3;--blue:#1A6FC4;--blue-pale:#E6F1FB;--green:#2E8B57;--green-pale:#EAF5EE;--amber:#C47A1A;--amber-pale:#FEF3E2;--red:#C0392B;--red-pale:#FDEAEA;--purple:#6B48C7;--purple-pale:#F0EEFB;--text1:#0A2540;--text2:#4A6080;--text3:#8A9BB0;--border:#DDE4ED;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text1);display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;min-height:100vh;}
+.brand{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.b-icon{width:36px;height:36px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.b-name{font-family:'Space Grotesk',sans-serif;font-size:17px;color:#fff;font-weight:600;}
+.b-sub{font-size:10px;color:rgba(255,255,255,0.4);}
+.nav-grp{padding:14px 12px 4px;}
+.nav-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.12em;text-transform:uppercase;padding:0 8px;margin-bottom:5px;display:block;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:2px;transition:all 0.15s;}
+.ni:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.85);}
+.ni.active{background:var(--teal);color:#fff;font-weight:500;}
+.ni svg{width:15px;height:15px;flex-shrink:0;}
+.logout-btn{margin:auto 12px 16px;display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.4);transition:all 0.15s;}
+.logout-btn:hover{background:rgba(192,57,43,0.2);color:#ff8a7a;}
+.main{flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.ph{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;}
+.ps{font-size:11px;color:var(--text3);margin-top:2px;}
+.tb-r{display:flex;align-items:center;gap:10px;}
+.tb-date{font-size:12px;color:var(--text3);background:var(--bg2);padding:6px 12px;border-radius:8px;border:1px solid var(--border);}
+.role-chip{background:rgba(10,175,160,0.1);color:var(--teal2);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid rgba(10,175,160,0.2);}
+.content{flex:1;padding:20px 24px;background:var(--bg);}
+.page{display:none;}.page.active{display:block;}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.kpi-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.kpi-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;}
+.kpi-num{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:600;line-height:1;}
+.kpi-lbl{font-size:11px;color:var(--text3);margin-top:5px;}
+.kpi-prog{height:3px;background:var(--bg2);border-radius:3px;margin-top:14px;overflow:hidden;}
+.kpi-fill{height:100%;border-radius:3px;}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.sec-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.pt{width:100%;border-collapse:collapse;font-size:12px;}
+.pt th{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.pt td{padding:11px 12px;border-bottom:1px solid var(--bg2);vertical-align:middle;}
+.pt tr:last-child td{border-bottom:none;}
+.pt tr:hover td{background:var(--bg);}
+.badge{display:inline-flex;font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;}
+.b-t{background:var(--teal-pale);color:var(--teal2);}
+.b-a{background:var(--amber-pale);color:var(--amber);}
+.b-b{background:var(--blue-pale);color:var(--blue);}
+.b-g{background:var(--green-pale);color:var(--green);}
+.b-r{background:var(--red-pale);color:var(--red);}
+.b-p{background:var(--purple-pale);color:var(--purple);}
+.b-gr{background:var(--bg2);color:var(--text3);}
+.av{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;margin-right:8px;vertical-align:middle;}
+.pips{display:inline-flex;gap:4px;vertical-align:middle;}
+.pip{width:9px;height:9px;border-radius:50%;}
+.p-on{background:var(--teal);}
+.p-off{background:var(--bg2);border:1px solid var(--border);}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal2);}
+.btn-danger{background:var(--red-pale);color:var(--red);border:1px solid rgba(192,57,43,0.2);}
+.btn-danger:hover{background:var(--red);color:#fff;}
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-bottom:18px;}
+.bar-list{display:flex;flex-direction:column;gap:11px;}
+.bar-item{display:flex;align-items:center;gap:10px;}
+.bi-lbl{font-size:12px;color:var(--text2);width:90px;flex-shrink:0;text-align:right;}
+.bi-track{flex:1;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;}
+.bi-fill{height:100%;border-radius:4px;}
+.bi-val{font-size:12px;color:var(--text3);width:20px;text-align:right;font-family:monospace;}
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:24px;}
+.dl{display:flex;flex-direction:column;gap:13px;}
+.dl-row{display:flex;align-items:center;gap:10px;font-size:12px;}
+.dl-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.dl-name{color:var(--text2);}
+.dl-num{margin-left:auto;font-weight:500;font-family:monospace;font-size:13px;}
+.alert{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:12px;}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:16px;padding:28px;width:460px;max-width:95vw;}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;}
+.fg input,.fg select{padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:var(--text1);outline:none;}
+.fg input:focus,.fg select:focus{border-color:var(--teal);}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
+.vcard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.vc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.vc-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.vc-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.vc-name{font-size:13px;font-weight:500;}
+.vc-company{font-size:11px;color:var(--text3);}
+.vc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--bg2);font-size:11px;}
+.vc-footer span:first-child{color:var(--text3);}
+.city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.city-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.loading{color:var(--text3);text-align:center;padding:24px;font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand">
+    <div class="b-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="8.5" y="3" width="3" height="14" rx="1" fill="white"/><rect x="3" y="8.5" width="14" height="3" rx="1" fill="white"/></svg></div>
+    <div><div class="b-name">VaxTrack</div><div class="b-sub">Admin Panel</div></div>
+  </div>
+  <div class="nav-grp">
+    <span class="nav-lbl">Overview</span>
+    <div class="ni active" onclick="go('dashboard',this)"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Dashboard</div>
+    <div class="ni" onclick="go('patients',this)"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Patients</div>
+    <div class="ni" onclick="go('appointments',this)"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v2M11 1v2M1 6h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Appointments</div>
+    <div class="ni" onclick="go('records',this)"><svg viewBox="0 0 16 16" fill="none"><path d="M3 2h10v12H3z" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h4M6 9h4M6 12h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Records</div>
+  </div>
+  <div class="nav-grp">
+    <span class="nav-lbl">Medical</span>
+    <div class="ni" onclick="go('vaccines',this)"><svg viewBox="0 0 16 16" fill="none"><path d="M5 11L11 5M3 9l2 2M7 13l2 2M11 2l3 3-1.5 1.5L9.5 3.5 11 2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Vaccines</div>
+    <div class="ni" onclick="go('centers',this)"><svg viewBox="0 0 16 16" fill="none"><path d="M2 14V6l6-4 6 4v8H2z" stroke="currentColor" stroke-width="1.3"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/></svg>Centers</div>
+    <div class="ni" onclick="go('doctors',this)"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Doctors</div>
+  </div>
+  <div class="logout-btn" onclick="window.location='/logout'"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M6 2H2v12h4M11 5l3 3-3 3M14 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Logout</div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="ph" id="ph">Dashboard</div><div class="ps" id="ps">Admin overview · Pakistan</div></div>
+    <div class="tb-r">
+      <div class="tb-date" id="today"></div>
+      <span class="role-chip">Admin</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="pg-dashboard">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-top"><div class="kpi-ico" style="background:var(--teal-pale);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3.5" stroke="#0AAFA0" stroke-width="1.5"/><path d="M2 17c0-3.866 3.134-6 7-6s7 2.134 7 6" stroke="#0AAFA0" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="kpi-badge" style="background:var(--teal-pale);color:var(--teal2);">Registered</span></div><div class="kpi-num" id="s-p">--</div><div class="kpi-lbl">Total patients</div><div class="kpi-prog"><div class="kpi-fill" style="width:70%;background:var(--teal);"></div></div></div>
+        <div class="kpi"><div class="kpi-top"><div class="kpi-ico" style="background:var(--blue-pale);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M5 13L13 5M3 11l2.5 2.5M8 16l2.5-2.5M12 2l4 4-2 2-4-4 2-2z" stroke="#1A6FC4" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="kpi-badge" style="background:var(--blue-pale);color:var(--blue);">6 types</span></div><div class="kpi-num" id="s-v">--</div><div class="kpi-lbl">Vaccines available</div><div class="kpi-prog"><div class="kpi-fill" style="width:60%;background:var(--blue);"></div></div></div>
+        <div class="kpi"><div class="kpi-top"><div class="kpi-ico" style="background:var(--amber-pale);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="#C47A1A" stroke-width="1.5"/><path d="M6 2v2M12 2v2M2 7h14" stroke="#C47A1A" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="kpi-badge" id="pend-badge" style="background:var(--amber-pale);color:var(--amber);">--</span></div><div class="kpi-num" id="s-a">--</div><div class="kpi-lbl">Appointments</div><div class="kpi-prog"><div class="kpi-fill" style="width:55%;background:var(--amber);"></div></div></div>
+        <div class="kpi"><div class="kpi-top"><div class="kpi-ico" style="background:var(--green-pale);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.5 4.5H15l-3.75 2.75 1.43 4.4L9 11.1l-3.68 2.65 1.43-4.4L3 6.5h4.5L9 2z" stroke="#2E8B57" stroke-width="1.4" stroke-linejoin="round"/></svg></div><span class="kpi-badge" style="background:var(--green-pale);color:var(--green);">Recorded</span></div><div class="kpi-num" id="s-d">--</div><div class="kpi-lbl">Doses administered</div><div class="kpi-prog"><div class="kpi-fill" id="dose-bar" style="width:0%;background:var(--green);"></div></div></div>
+      </div>
+      <div class="alert" style="background:var(--amber-pale);border:1px solid #f0c06a;" id="alert-box">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L14 13H2L8 2z" stroke="#C47A1A" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6v4M8 11.5v.5" stroke="#C47A1A" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span style="color:#854F0B;font-weight:500;" id="alert-txt">Loading...</span>
+        <span style="margin-left:auto;color:var(--amber);font-size:11px;cursor:pointer;font-weight:500;" onclick="go('appointments',null)">View</span>
+      </div>
+      <div class="two-col">
+        <div class="sec" style="margin-bottom:0;"><div class="sec-head"><div><div class="sec-title">Vaccine usage</div><div class="sec-sub">From Oracle DB</div></div></div><div class="bar-list" id="vbars"><div class="loading">Loading...</div></div></div>
+        <div class="sec" style="margin-bottom:0;"><div class="sec-head"><div class="sec-title">Appointment status</div></div>
+          <div class="donut-wrap">
+            <svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="38" fill="none" stroke="#EEF2F7" stroke-width="18"/><circle cx="55" cy="55" r="38" fill="none" stroke="#0AAFA0" stroke-width="18" stroke-dasharray="152 87" stroke-dashoffset="25" transform="rotate(-90 55 55)" id="d-comp"/><circle cx="55" cy="55" r="38" fill="none" stroke="#C47A1A" stroke-width="18" stroke-dasharray="72 167" stroke-dashoffset="-127" transform="rotate(-90 55 55)" id="d-pend"/><text x="55" y="50" text-anchor="middle" font-size="20" font-weight="600" fill="#0A2540" font-family="'Space Grotesk',sans-serif" id="d-tot">--</text><text x="55" y="64" text-anchor="middle" font-size="10" fill="#8A9BB0">total</text></svg>
+            <div class="dl"><div class="dl-row"><div class="dl-dot" style="background:var(--teal);"></div><div class="dl-name">Completed</div><div class="dl-num" id="dl-c">--</div></div><div class="dl-row"><div class="dl-dot" style="background:var(--amber);"></div><div class="dl-name">Pending</div><div class="dl-num" id="dl-p">--</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec"><div class="sec-head"><div><div class="sec-title">Recent records</div></div><span style="font-size:11px;color:var(--teal);cursor:pointer;font-weight:500;" onclick="go('records',null)">View all</span></div>
+        <table class="pt"><thead><tr><th>Patient</th><th>Vaccine</th><th>Doctor</th><th>Center</th><th>Dose</th><th>Date</th><th>Status</th></tr></thead><tbody id="dash-rec"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- PATIENTS -->
+    <div class="page" id="pg-patients">
+      <div class="sec">
+        <div class="sec-head"><div class="sec-title">Patient registry</div><button class="btn btn-primary" onclick="openModal('add-patient')">+ Add patient</button></div>
+        <table class="pt"><thead><tr><th>#</th><th>Name</th><th>Gender</th><th>DOB</th><th>Phone</th><th>City</th><th>Action</th></tr></thead><tbody id="pat-tbody"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="page" id="pg-appointments">
+      <div class="sec"><div class="sec-head"><div class="sec-title">All appointments</div></div>
+        <table class="pt"><thead><tr><th>#</th><th>Patient</th><th>Center</th><th>Date</th><th>Status</th></tr></thead><tbody id="appt-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- RECORDS -->
+    <div class="page" id="pg-records">
+      <div class="sec"><div class="sec-head"><div class="sec-title">Vaccination records</div><button class="btn btn-primary" onclick="openModal('add-record')">+ Add record</button></div>
+        <table class="pt"><thead><tr><th>ID</th><th>Patient</th><th>Vaccine</th><th>Doctor</th><th>Center</th><th>Dose</th><th>Date</th></tr></thead><tbody id="rec-tbody"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- VACCINES -->
+    <div class="page" id="pg-vaccines">
+      <div class="vcard-grid" id="vac-grid"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- CENTERS -->
+    <div class="page" id="pg-centers">
+      <div class="city-grid" id="cen-grid"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- DOCTORS -->
+    <div class="page" id="pg-doctors">
+      <div class="sec"><div class="sec-head"><div class="sec-title">Doctors</div></div>
+        <table class="pt"><thead><tr><th>#</th><th>Name</th><th>Specialization</th><th>Center</th></tr></thead><tbody id="doc-tbody"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD PATIENT MODAL -->
+<div class="modal-bg" id="modal-add-patient">
+  <div class="modal">
+    <div class="modal-title">New Patient Add karo</div>
+    <div class="form-grid">
+      <div class="fg" style="grid-column:1/-1;"><label>Full Name</label><input type="text" id="new-name" placeholder="Patient ka naam"></div>
+      <div class="fg"><label>Gender</label><select id="new-gender"><option value="Male">Male</option><option value="Female">Female</option></select></div>
+      <div class="fg"><label>Date of Birth</label><input type="date" id="new-dob"></div>
+      <div class="fg"><label>Phone</label><input type="text" id="new-phone" placeholder="03001234567"></div>
+      <div class="fg"><label>City</label><input type="text" id="new-address" placeholder="City"></div>
+    </div>
+    <div id="modal-err" style="color:var(--red);font-size:12px;margin-bottom:10px;display:none;"></div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg2);color:var(--text2);" onclick="closeModal('add-patient')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPatient()">Save karo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD RECORD MODAL -->
+<div class="modal-bg" id="modal-add-record">
+  <div class="modal">
+    <div class="modal-title">Vaccination Record Add karo</div>
+    <div class="form-grid">
+      <div class="fg"><label>Patient</label><select id="rec-patient"><option>Loading...</option></select></div>
+      <div class="fg"><label>Vaccine</label><select id="rec-vaccine"><option>Loading...</option></select></div>
+      <div class="fg"><label>Doctor</label><select id="rec-doctor"><option>Loading...</option></select></div>
+      <div class="fg"><label>Center</label><select id="rec-center"><option>Loading...</option></select></div>
+      <div class="fg"><label>Dose Number</label><select id="rec-dose"><option value="1">Dose 1</option><option value="2">Dose 2</option></select></div>
+    </div>
+    <div id="rec-err" style="color:var(--red);font-size:12px;margin-bottom:10px;display:none;"></div>
+    <div class="modal-footer">
+      <button class="btn" style="background:var(--bg2);color:var(--text2);" onclick="closeModal('add-record')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitRecord()">Save karo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const AV=[{bg:'#E0F5F3',c:'#087d72'},{bg:'#E6F1FB',c:'#1A6FC4'},{bg:'#F0EEFB',c:'#6B48C7'},{bg:'#FEF3E2',c:'#C47A1A'},{bg:'#EAF5EE',c:'#2E8B57'},{bg:'#FDEAEA',c:'#C0392B'},{bg:'#E8EEF4',c:'#4A6080'}];
+const VC=['#0AAFA0','#1A6FC4','#6B48C7','#C47A1A','#2E8B57','#C0392B'];
+const VCI=['var(--teal-pale)','var(--blue-pale)','var(--purple-pale)','var(--amber-pale)','var(--green-pale)','var(--red-pale)'];
+const VCB=['b-t','b-b','b-p','b-a','b-g','b-r'];
+const CI=['var(--teal-pale)','var(--blue-pale)','var(--purple-pale)','var(--amber-pale)','var(--green-pale)','var(--red-pale)'];
+const CS=['#0AAFA0','#1A6FC4','#6B48C7','#C47A1A','#2E8B57','#C0392B'];
+
+const meta={dashboard:{h:'Dashboard',s:'Admin overview · Pakistan'},patients:{h:'Patients',s:'All registered patients'},appointments:{h:'Appointments',s:'Appointment schedule'},records:{h:'Records',s:'Vaccination records'},vaccines:{h:'Vaccines',s:'Available inventory'},centers:{h:'Centers',s:'Health facilities'},doctors:{h:'Doctors',s:'Medical staff'}};
+
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  else document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
+  const m=meta[id];if(m){document.getElementById('ph').textContent=m.h;document.getElementById('ps').textContent=m.s;}
+}
+
+function ini(n){const p=n.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+function avs(i){const c=AV[i%AV.length];return `background:${c.bg};color:${c.c};`;}
+
+function openModal(name){
+  document.getElementById('modal-'+name).classList.add('open');
+  if(name==='add-record') populateDropdowns();
+}
+function closeModal(name){document.getElementById('modal-'+name).classList.remove('open');}
+
+async function populateDropdowns(){
+  const [pats,vacs,docs,cens]=await Promise.all([
+    fetch('/api/patients').then(r=>r.json()),
+    fetch('/api/vaccines').then(r=>r.json()),
+    fetch('/api/doctors').then(r=>r.json()),
+    fetch('/api/centers').then(r=>r.json())
+  ]);
+  document.getElementById('rec-patient').innerHTML=pats.map(p=>`<option value="${p.PATIENT_ID}">${p.NAME}</option>`).join('');
+  document.getElementById('rec-vaccine').innerHTML=vacs.map(v=>`<option value="${v.VACCINE_ID}">${v.VACCINE_NAME}</option>`).join('');
+  document.getElementById('rec-doctor').innerHTML=docs.map(d=>`<option value="${d.DOCTOR_ID}">${d.DOCTOR_NAME}</option>`).join('');
+  document.getElementById('rec-center').innerHTML=cens.map(c=>`<option value="${c.CENTER_ID}">${c.CENTER_NAME}</option>`).join('');
+}
+
+async function submitPatient(){
+  const data={name:document.getElementById('new-name').value,gender:document.getElementById('new-gender').value,dob:document.getElementById('new-dob').value,phone:document.getElementById('new-phone').value,address:document.getElementById('new-address').value};
+  if(!data.name||!data.dob||!data.phone){document.getElementById('modal-err').textContent='Sab fields bharo!';document.getElementById('modal-err').style.display='block';return;}
+  const res=await fetch('/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d=await res.json();
+  if(d.success){closeModal('add-patient');loadPatients();alert('Patient add ho gaya!');}
+  else{document.getElementById('modal-err').textContent=d.error||'Error!';document.getElementById('modal-err').style.display='block';}
+}
+
+async function submitRecord(){
+  const data={patient_id:document.getElementById('rec-patient').value,vaccine_id:document.getElementById('rec-vaccine').value,doctor_id:document.getElementById('rec-doctor').value,center_id:document.getElementById('rec-center').value,dose_no:document.getElementById('rec-dose').value};
+  const res=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d=await res.json();
+  if(d.success){closeModal('add-record');loadRecords();loadStats();alert('Record add ho gaya! Trigger ne appointment update kar diya.');}
+  else{document.getElementById('rec-err').textContent=d.error||'Error!';document.getElementById('rec-err').style.display='block';}
+}
+
+async function deletePatient(id){
+  if(!confirm('Aap sure hain? Patient delete ho jayega!'))return;
+  await fetch('/api/patients/'+id,{method:'DELETE'});
+  loadPatients();
+}
+
+async function loadStats(){
+  const d=await fetch('/api/stats').then(r=>r.json());
+  document.getElementById('s-p').textContent=d.total_patients;
+  document.getElementById('s-v').textContent=d.total_vaccines;
+  document.getElementById('s-a').textContent=d.total_appointments;
+  document.getElementById('s-d').textContent=d.total_doses;
+  document.getElementById('pend-badge').textContent=d.pending_appointments+' pending';
+  document.getElementById('dl-c').textContent=d.total_appointments-d.pending_appointments;
+  document.getElementById('dl-p').textContent=d.pending_appointments;
+  document.getElementById('d-tot').textContent=d.total_appointments;
+  document.getElementById('dose-bar').style.width=Math.min(100,Math.round(d.total_doses/14*100))+'%';
+  document.getElementById('alert-txt').textContent=d.pending_appointments+' appointments pending — follow-up required.';
+}
+
+async function loadPatients(){
+  const data=await fetch('/api/patients').then(r=>r.json());
+  document.getElementById('pat-tbody').innerHTML=data.map((p,i)=>`<tr>
+    <td style="color:var(--text3);font-family:monospace;">P-00${p.PATIENT_ID}</td>
+    <td><span class="av" style="${avs(i)}">${ini(p.NAME)}</span>${p.NAME}</td>
+    <td>${p.GENDER||'-'}</td><td style="color:var(--text3);">${p.DOB||'-'}</td>
+    <td style="color:var(--text3);">${p.PHONE||'-'}</td><td>${p.ADDRESS||'-'}</td>
+    <td><button class="btn btn-danger" onclick="deletePatient(${p.PATIENT_ID})">Delete</button></td>
+  </tr>`).join('');
+}
+
+async function loadAppointments(){
+  const data=await fetch('/api/appointments').then(r=>r.json());
+  document.getElementById('appt-tbody').innerHTML=data.map(a=>`<tr>
+    <td style="color:var(--text3);font-family:monospace;">A-00${a.APPOINTMENT_ID}</td>
+    <td>${a.PATIENT_NAME}</td><td>${a.CENTER_NAME}</td>
+    <td style="color:var(--text3);">${a.APPT_DATE}</td>
+    <td><span class="badge ${a.STATUS==='Completed'?'b-t':'b-a'}">${a.STATUS}</span></td>
+  </tr>`).join('');
+}
+
+async function loadRecords(){
+  const data=await fetch('/api/records').then(r=>r.json());
+  const rows=data.map((r,i)=>`<tr>
+    <td style="color:var(--text3);font-family:monospace;">R-00${r.RECORD_ID}</td>
+    <td><span class="av" style="${avs(i)}">${ini(r.PATIENT_NAME)}</span>${r.PATIENT_NAME}</td>
+    <td>${r.VACCINE_NAME}</td><td>${r.DOCTOR_NAME}</td><td>${r.CENTER_NAME}</td>
+    <td><span class="badge b-b">Dose ${r.DOSE_NO}</span></td>
+    <td style="color:var(--text3);">${r.VAX_DATE}</td>
+  </tr>`);
+  document.getElementById('rec-tbody').innerHTML=rows.join('');
+  document.getElementById('dash-rec').innerHTML=data.slice(0,5).map((r,i)=>`<tr>
+    <td><span class="av" style="${avs(i)}">${ini(r.PATIENT_NAME)}</span>${r.PATIENT_NAME}</td>
+    <td>${r.VACCINE_NAME}</td><td>${r.DOCTOR_NAME}</td><td>${r.CENTER_NAME}</td>
+    <td><div class="pips"><div class="pip p-on"></div><div class="pip ${r.DOSE_NO>=2?'p-on':'p-off'}"></div></div></td>
+    <td style="color:var(--text3);">${r.VAX_DATE}</td>
+    <td><span class="badge ${r.DOSE_NO>=2||r.VACCINE_NAME==='CanSino'?'b-t':'b-a'}">${r.DOSE_NO>=2||r.VACCINE_NAME==='CanSino'?'Complete':'Dose 2 due'}</span></td>
+  </tr>`).join('');
+  const vc={};data.forEach(r=>{vc[r.VACCINE_NAME]=(vc[r.VACCINE_NAME]||0)+1;});
+  const mx=Math.max(...Object.values(vc));
+  document.getElementById('vbars').innerHTML=Object.keys(vc).map((n,i)=>`<div class="bar-item"><div class="bi-lbl">${n}</div><div class="bi-track"><div class="bi-fill" style="width:${Math.round(vc[n]/mx*100)}%;background:${VC[i%VC.length]};"></div></div><div class="bi-val">${vc[n]}</div></div>`).join('');
+}
+
+async function loadVaccines(){
+  const data=await fetch('/api/vaccines').then(r=>r.json());
+  document.getElementById('vac-grid').innerHTML=data.map((v,i)=>`<div class="vc">
+    <div class="vc-top"><div class="vc-ico" style="background:${VCI[i%VCI.length]};"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M5 13L13 5M3 11l2.5 2.5M8 16l2.5-2.5M12 2l4 4-2 2-4-4 2-2z" stroke="${VC[i%VC.length]}" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div><div class="vc-name">${v.VACCINE_NAME}</div><div class="vc-company">${v.COMPANY||''}</div></div></div>
+    <div class="vc-footer"><span>Doses required</span><span class="badge ${VCB[i%VCB.length]}">${v.DOSES_REQUIRED} dose${v.DOSES_REQUIRED>1?'s':''}</span></div>
+  </div>`).join('');
+}
+
+async function loadCenters(){
+  const data=await fetch('/api/centers').then(r=>r.json());
+  document.getElementById('cen-grid').innerHTML=data.map((c,i)=>`<div class="city-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+      <div><div style="font-size:13px;font-weight:500;">${c.CENTER_NAME}</div><div style="font-size:11px;color:var(--text3);">${c.CITY} · ${c.PHONE||''}</div></div>
+      <div style="width:32px;height:32px;border-radius:8px;background:${CI[i%CI.length]};display:flex;align-items:center;justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 14V6l6-4 6 4v8H2z" stroke="${CS[i%CS.length]}" stroke-width="1.3"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="${CS[i%CS.length]}" stroke-width="1.3"/></svg>
+      </div>
+    </div>
+    <div style="height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;"><div style="width:${65+i*5}%;height:100%;background:${CS[i%CS.length]};border-radius:2px;"></div></div>
+  </div>`).join('');
+}
+
+async function loadDoctors(){
+  const data=await fetch('/api/doctors').then(r=>r.json());
+  document.getElementById('doc-tbody').innerHTML=data.map((d,i)=>`<tr>
+    <td style="color:var(--text3);font-family:monospace;">D-00${d.DOCTOR_ID}</td>
+    <td><span class="av" style="${avs(i)}">${ini(d.DOCTOR_NAME)}</span>${d.DOCTOR_NAME}</td>
+    <td><span class="badge b-b">${d.SPECIALIZATION}</span></td>
+    <td>${d.CENTER_NAME}</td>
+  </tr>`).join('');
+}
+
+document.getElementById('today').textContent=new Date().toLocaleDateString('en-PK',{day:'numeric',month:'short',year:'numeric'});
+window.onload=()=>{loadStats();loadPatients();loadRecords();loadVaccines();loadCenters();loadDoctors();loadAppointments();};
+</script>
+</body>
+</html>

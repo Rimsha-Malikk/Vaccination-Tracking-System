@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VaxTrack — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#0A2540;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.bg-pattern{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(10,175,160,0.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(26,111,196,0.15) 0%,transparent 60%);pointer-events:none;}
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:40px;width:420px;backdrop-filter:blur(20px);position:relative;z-index:1;}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:32px;}
+.logo-icon{width:42px;height:42px;background:#0AAFA0;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.logo-name{font-family:'Space Grotesk',sans-serif;font-size:22px;color:#fff;letter-spacing:0.5px;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,0.4);}
+.title{font-family:'Space Grotesk',sans-serif;font-size:22px;color:#fff;margin-bottom:6px;}
+.subtitle{font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:28px;}
+.role-tabs{display:flex;gap:6px;margin-bottom:24px;background:rgba(255,255,255,0.05);padding:4px;border-radius:10px;}
+.rtab{flex:1;padding:8px;text-align:center;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);transition:all 0.2s;}
+.rtab.active{background:#0AAFA0;color:#fff;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,0.5);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;}
+.field input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:14px;color:#fff;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;}
+.field input:focus{border-color:#0AAFA0;background:rgba(10,175,160,0.08);}
+.field input::placeholder{color:rgba(255,255,255,0.25);}
+.btn-login{width:100%;background:#0AAFA0;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px;transition:background 0.2s;}
+.btn-login:hover{background:#087d72;}
+.hint{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;margin-top:20px;}
+.hint-title{font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.hint-row{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.5);padding:3px 0;}
+.hint-row span:last-child{color:rgba(255,255,255,0.7);font-family:monospace;}
+.error{background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#ff8a7a;margin-top:12px;display:none;}
+</style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+        <rect x="8.5" y="3" width="3" height="14" rx="1" fill="white"/>
+        <rect x="3" y="8.5" width="14" height="3" rx="1" fill="white"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">VaxTrack</div>
+      <div class="logo-sub">Vaccination Management System</div>
+    </div>
+  </div>
+
+  <div class="title">Welcome back</div>
+  <div class="subtitle">Login karein apne role ke saath</div>
+
+  <div class="role-tabs">
+    <div class="rtab active" onclick="setRole('admin',this)">Admin</div>
+    <div class="rtab" onclick="setRole('doctor',this)">Doctor</div>
+    <div class="rtab" onclick="setRole('patient',this)">Patient</div>
+  </div>
+
+  <div class="field">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="apna username likhein...">
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="password likhein...">
+  </div>
+  <button class="btn-login" onclick="doLogin()">Login karo</button>
+  <div class="error" id="err-msg"></div>
+
+  <div class="hint">
+    <div class="hint-title">Test credentials</div>
+    <div class="hint-row"><span id="h1">Admin</span><span id="h2">admin / admin123</span></div>
+    <div class="hint-row"><span id="h3">Doctor</span><span>dr.ahmad / doc123</span></div>
+    <div class="hint-row"><span id="h4">Patient</span><span>rimsha / pat123</span></div>
+  </div>
+</div>
+
+<script>
+function setRole(role, el) {
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+async function doLogin() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if (!username || !password) {
+    showErr('Username aur password dono zaroor bharein!');
+    return;
+  }
+  const res = await fetch('/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username, password})
+  });
+  const data = await res.json();
+  if (data.success) {
+    window.location.href = '/dashboard';
+  } else {
+    showErr(data.message || 'Login fail hua!');
+  }
+}
+
+function showErr(msg) {
+  const el = document.getElementById('err-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>

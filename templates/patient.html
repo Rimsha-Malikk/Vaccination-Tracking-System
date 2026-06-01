@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>VaxTrack — Patient</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F0F4F8;--bg2:#E8EEF4;--card:#fff;--navy:#0A2540;--teal:#0AAFA0;--teal2:#087d72;--teal-pale:#E0F5F3;--green:#2E8B57;--green-pale:#EAF5EE;--amber:#C47A1A;--amber-pale:#FEF3E2;--blue:#1A6FC4;--blue-pale:#E6F1FB;--text1:#0A2540;--text2:#4A6080;--text3:#8A9BB0;--border:#DDE4ED;}
+body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;min-height:100vh;}
+.sidebar{width:210px;background:var(--navy);display:flex;flex-direction:column;min-height:100vh;}
+.brand{padding:20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.b-icon{width:34px;height:34px;background:#2E8B57;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.b-name{font-family:'Space Grotesk',sans-serif;font-size:16px;color:#fff;}
+.b-sub{font-size:10px;color:rgba(255,255,255,0.4);}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.5);margin:1px 12px;transition:all 0.15s;}
+.ni:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.85);}
+.ni.active{background:#2E8B57;color:#fff;font-weight:500;}
+.ni svg{width:15px;height:15px;}
+.logout-btn{margin:auto 12px 16px;display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.4);}
+.logout-btn:hover{background:rgba(192,57,43,0.2);color:#ff8a7a;}
+.main{flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.ph{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;}
+.ps{font-size:11px;color:var(--text3);margin-top:2px;}
+.role-chip{background:var(--green-pale);color:var(--green);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;}
+.content{flex:1;padding:20px 24px;}
+.page{display:none;}.page.active{display:block;}
+.welcome-card{background:linear-gradient(135deg,#0A2540,#1B3A5C);border-radius:16px;padding:24px;margin-bottom:18px;color:#fff;}
+.wc-name{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:4px;}
+.wc-sub{font-size:13px;color:rgba(255,255,255,0.5);}
+.status-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;}
+.sc-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;margin-bottom:16px;}
+.vax-progress{display:flex;flex-direction:column;gap:14px;}
+.vp-row{background:var(--bg2);border-radius:10px;padding:14px 16px;}
+.vp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.vp-name{font-size:13px;font-weight:500;}
+.vp-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.vp-fill{height:100%;border-radius:3px;background:var(--teal);}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;margin-bottom:14px;}
+.pt{width:100%;border-collapse:collapse;font-size:12px;}
+.pt th{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.pt td{padding:11px 12px;border-bottom:1px solid var(--bg2);vertical-align:middle;}
+.pt tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;}
+.b-t{background:var(--teal-pale);color:var(--teal2);}
+.b-a{background:var(--amber-pale);color:var(--amber);}
+.b-b{background:var(--blue-pale);color:var(--blue);}
+.b-g{background:var(--green-pale);color:var(--green);}
+.loading{color:var(--text3);text-align:center;padding:24px;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="brand">
+    <div class="b-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="8.5" y="3" width="3" height="14" rx="1" fill="white"/><rect x="3" y="8.5" width="14" height="3" rx="1" fill="white"/></svg></div>
+    <div><div class="b-name">VaxTrack</div><div class="b-sub">Patient Portal</div></div>
+  </div>
+  <div style="padding:14px 0 4px;">
+    <div class="ni active" onclick="go('dashboard',this)"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>My Dashboard</div>
+    <div class="ni" onclick="go('records',this)"><svg viewBox="0 0 16 16" fill="none"><path d="M3 2h10v12H3z" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h4M6 9h4M6 12h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>My Vaccination</div>
+    <div class="ni" onclick="go('appointments',this)"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v2M11 1v2M1 6h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>My Appointments</div>
+  </div>
+  <div class="logout-btn" onclick="window.location='/logout'"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M6 2H2v12h4M11 5l3 3-3 3M14 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Logout</div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div><div class="ph">Patient Portal</div><div class="ps">Apni vaccination history dekhein</div></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:12px;color:var(--text3);" id="pat-uname">Loading...</span>
+      <span class="role-chip">Patient</span>
+    </div>
+  </div>
+  <div class="content">
+    <div class="page active" id="pg-dashboard">
+      <div class="welcome-card">
+        <div class="wc-name" id="wc-name">Welcome!</div>
+        <div class="wc-sub" id="wc-sub">Aapki vaccination history neeche hai</div>
+      </div>
+      <div class="status-card">
+        <div class="sc-title">Vaccination status</div>
+        <div class="vax-progress" id="vax-status"><div class="loading">Loading...</div></div>
+      </div>
+      <div class="sec"><div class="sec-title">Recent doses</div>
+        <table class="pt"><thead><tr><th>Vaccine</th><th>Doctor</th><th>Center</th><th>Dose</th><th>Date</th></tr></thead>
+        <tbody id="pat-dash"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+    <div class="page" id="pg-records">
+      <div class="sec"><div class="sec-title">My vaccination records</div>
+        <table class="pt"><thead><tr><th>ID</th><th>Vaccine</th><th>Doctor</th><th>Center</th><th>Dose</th><th>Date</th></tr></thead>
+        <tbody id="pat-rec"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+    <div class="page" id="pg-appointments">
+      <div class="sec"><div class="sec-title">My appointments</div>
+        <table class="pt"><thead><tr><th>ID</th><th>Center</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="pat-appt"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function go(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('pg-'+id).classList.add('active');if(el)el.classList.add('active');}
+async function loadAll(){
+  const [recs,appts,sess]=await Promise.all([fetch('/api/records').then(r=>r.json()),fetch('/api/appointments').then(r=>r.json()),fetch('/api/session').then(r=>r.json())]);
+  document.getElementById('pat-uname').textContent=sess.username||'';
+  document.getElementById('wc-name').textContent='Welcome, '+sess.username+'!';
+  document.getElementById('wc-sub').textContent=recs.length+' doses recorded · '+appts.length+' appointments';
+  // Vaccination status
+  const totalDoses=recs.length;
+  const vaccinesTaken=[...new Set(recs.map(r=>r.VACCINE_NAME))];
+  document.getElementById('vax-status').innerHTML=vaccinesTaken.length>0?vaccinesTaken.map(v=>{
+    const vRecs=recs.filter(r=>r.VACCINE_NAME===v);
+    const doses=vRecs.length;
+    const req=v==='CanSino'?1:2;
+    const pct=Math.min(100,Math.round(doses/req*100));
+    const done=doses>=req;
+    return `<div class="vp-row">
+      <div class="vp-top"><span class="vp-name">${v}</span><span class="badge ${done?'b-g':'b-a'}">${done?'Complete':'${doses}/${req} doses'}</span></div>
+      <div class="vp-bar"><div class="vp-fill" style="width:${pct}%;background:${done?'var(--green)':'var(--teal)'}"></div></div>
+    </div>`;
+  }).join(''):'<div class="loading">Abhi koi vaccine nahi li</div>';
+  // Recent doses
+  document.getElementById('pat-dash').innerHTML=recs.slice(0,5).map(r=>`<tr><td>${r.VACCINE_NAME}</td><td>${r.DOCTOR_NAME}</td><td>${r.CENTER_NAME}</td><td><span class="badge b-b">Dose ${r.DOSE_NO}</span></td><td style="color:var(--text3);">${r.VAX_DATE}</td></tr>`).join('');
+  document.getElementById('pat-rec').innerHTML=recs.map(r=>`<tr><td style="color:var(--text3);font-family:monospace;">R-00${r.RECORD_ID}</td><td>${r.VACCINE_NAME}</td><td>${r.DOCTOR_NAME}</td><td>${r.CENTER_NAME}</td><td><span class="badge b-b">Dose ${r.DOSE_NO}</span></td><td style="color:var(--text3);">${r.VAX_DATE}</td></tr>`).join('');
+  document.getElementById('pat-appt').innerHTML=appts.map(a=>`<tr><td style="color:var(--text3);font-family:monospace;">A-00${a.APPOINTMENT_ID}</td><td>${a.CENTER_NAME}</td><td style="color:var(--text3);">${a.APPT_DATE}</td><td><span class="badge ${a.STATUS==='Completed'?'b-t':'b-a'}">${a.STATUS}</span></td></tr>`).join('');
+}
+window.onload=loadAll;
+</script>
+</body></html>
